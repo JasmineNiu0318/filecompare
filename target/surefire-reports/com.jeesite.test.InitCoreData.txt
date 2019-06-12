@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.jeesite.test.InitCoreData
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 54.855 sec - in com.jeesite.test.InitCoreData
