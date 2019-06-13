@@ -1,0 +1,44 @@
+<% layout('/layouts/default.html', {title: '查看原始数据', libs: ['dataGrid']}){ %>
+<div class="main-content">
+	<div class="box box-main">
+		<div class="box-header">
+			<div class="box-title">
+				<i class="fa fa-list-alt"></i> ${text('查看原始数据')}
+			</div>
+		</div>
+		<div class="box-body">
+			<#form:form id="searchForm" model="${texcel}" action="${ctx}/texcel/texcel/listData" method="post" class="form-inline hide"
+			data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
+				<div class="form-group">
+					<label class="control-label">${text('Excel名称')}：</label>
+					<div class="control-inline">
+						<#form:input path="name" maxlength="255" class="form-control width-120"/>
+					</div>
+				</div>
+			</#form:form>
+			<table id="dataGrid"></table>
+			<div id="dataGridPage"></div>
+		</div>
+	</div>
+</div>
+<% } %>
+<script>
+
+	// 初始化DataGrid对象
+	$('#dataGrid').dataGrid({
+		columnModel: [
+			{header:'${text("Excel名称")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+					return '<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" data-title="${text("编辑t_excel")}">'+(val||row.id)+'</a>';
+				}},
+			{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
+					return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
+				}},
+			{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
+			{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"}
+		],
+		// 加载成功后执行事件
+		ajaxSuccess: function(data){
+
+		}
+	});
+</script>
