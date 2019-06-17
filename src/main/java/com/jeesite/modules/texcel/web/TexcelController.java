@@ -112,7 +112,7 @@ public class TexcelController extends BaseController {
      * 查看原始数据
      */
     @RequiresPermissions("texcel:texcel:view")
-    @RequestMapping(value = "form")
+    @RequestMapping(value = "allinfoform")
     public String updateInfoForm(Texcel texcel, Model model) {
         model.addAttribute("texcel", texcel);
         return "modules/texcel/texcelallinfoForm";

@@ -1,26 +1,22 @@
-<% layout('/layouts/default.html', {title: 't_excel管理', libs: ['dataGrid']}){ %>
+<% layout('/layouts/default.html', {title: 't_excel_info管理', libs: ['dataGrid']}){ %>
 <div class="main-content">
 	<div class="box box-main">
 		<div class="box-header">
 			<div class="box-title">
-				<i class="fa fa-list-alt"></i> ${text('t_excel管理')}
+				<i class="fa fa-list-alt"></i> ${text('t_excel_info管理')}
 			</div>
 			<div class="box-tools pull-right">
-				<a href="#" class="btn btn-default" id="btnUpload" title="${text('文件上传')}"><i class="fa fa-cloud-upload"></i> ${text('文件上传')}</a>
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
-				<% if(hasPermi('texcel:texcel:edit')){ %>
-					<a href="${ctx}/texcel/texcel/form" class="btn btn-default btnTool" title="${text('新增t_excel')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
+				<% if(hasPermi('texcelinfo:texcelInfo:edit')){ %>
+					<a href="${ctx}/texcelinfo/texcelInfo/form" class="btn btn-default btnTool" title="${text('新增t_excel_info')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
 				<% } %>
 			</div>
 		</div>
 		<div class="box-body">
-			<#form:form id="searchForm" model="${texcel}" action="${ctx}/texcel/texcel/listData" method="post" class="form-inline hide"
+			<#form:form id="searchForm" model="${texcelInfo}" action="${ctx}/texcelinfo/texcelInfo/listData" method="post" class="form-inline hide"
 					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
 				<div class="form-group">
-					<label class="control-label">${text('Excel名称')}：</label>
-					<div class="control-inline">
-						<#form:input path="name" maxlength="255" class="form-control width-120"/>
-					</div>
+					<label class="control-label">${text('关联Excel表ID')}：</label>
 				</div>
 				<div class="form-group">
 					<label class="control-label">${text('状态')}：</label>
@@ -50,8 +46,8 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("Excel名称")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
-			return '<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" data-title="${text("编辑t_excel")}">'+(val||row.id)+'</a>';
+		{header:'${text("关联Excel表ID")}', name:'excelId', index:'a.excel_id', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
+			return '<a href="${ctx}/texcelinfo/texcelInfo/form?id='+row.id+'" class="btnList" data-title="${text("编辑t_excel_info")}">'+(val||row.id)+'</a>';
 		}},
 		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
@@ -60,12 +56,9 @@ $('#dataGrid').dataGrid({
 		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
-			<% if(hasPermi('texcel:texcel:edit')){ %>
-				actions.push('<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" title="${text("编辑t_excel")}"><i class="fa fa-pencil"></i></a>&nbsp;');
-				actions.push('<a href="${ctx}/texcel/texcel/delete?id='+row.id+'" class="btnList" title="${text("删除t_excel")}" data-confirm="${text("确认要删除该t_excel吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
-				actions.push('<a href="${ctx}/texcel/texcel/allinfoform?id='+row.id+'" class="btnList" title="${text("查看原始数据")}"><i class="fa fa-database"></i></a>&nbsp;');
-				actions.push('<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" title="${text("编辑数据")}"><i class="fa fa-edit (alias)"></i></a>&nbsp;');
-				actions.push('<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" title="${text("数据对比")}"><i class="fa fa-delicious"></i></a>&nbsp;');
+			<% if(hasPermi('texcelinfo:texcelInfo:edit')){ %>
+				actions.push('<a href="${ctx}/texcelinfo/texcelInfo/form?id='+row.id+'" class="btnList" title="${text("编辑t_excel_info")}"><i class="fa fa-pencil"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/texcelinfo/texcelInfo/delete?id='+row.id+'" class="btnList" title="${text("删除t_excel_info")}" data-confirm="${text("确认要删除该t_excel_info吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
 			<% } %>
 			return actions.join('');
 		}}
