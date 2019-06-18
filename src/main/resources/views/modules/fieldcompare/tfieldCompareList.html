@@ -15,21 +15,6 @@
 		<div class="box-body">
 			<#form:form id="searchForm" model="${tfieldCompare}" action="${ctx}/fieldcompare/tfieldCompare/listData" method="post" class="form-inline hide"
 					data-page-no="${parameter.pageNo}" data-page-size="${parameter.pageSize}" data-order-by="${parameter.orderBy}">
-<!--				<div class="form-group">-->
-<!--					<label class="control-label">${text('系统流向名称')}：</label>-->
-<!--					<div class="control-inline width-120">-->
-<!--						<#form:select path="systemId" dictType="sys_field_compare" blankOption="true" class="form-control"/>-->
-<!--					</div>-->
-<!--				</div>-->
-				<div class="form-group">
-					<label class="control-label">${text('系统流向名称')}：</label>
-					<div class="control-inline">
-						<#form:treeselect id="systemId" title="系统流向名称"
-						path="systemId.id" labelPath="systemId.name"
-						url="${ctx}/systemcompare/tsystemCompare/treeData"
-						class="" allowClear="true"/>
-					</div>
-				</div>
 				<div class="form-group">
 					<label class="control-label">${text('旧数据字段名称')}：</label>
 					<div class="control-inline">
@@ -43,16 +28,12 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label">${text('状态')}：</label>
-					<div class="control-inline width-120">
-						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">${text('更新时间')}：</label>
+					<label class="control-label">${text('系统流向名称')}：</label>
 					<div class="control-inline">
-						<#form:input path="updateTime" readonly="true" maxlength="20" class="form-control Wdate-datetime"
-							dataFormat="datetime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',isShowClear:false});"/>
+						<#form:treeselect id="systemId" title="系统流向名称"
+						path="systemId.id" labelPath="systemId.name"
+						url="${ctx}/systemcompare/tsystemCompare/treeData"
+						class="" allowClear="true"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -77,12 +58,12 @@
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
-		{header:'${text("系统流向名称")}', name:'systemId.name', index:'a.system_id.id', width:150, align:"left"},
 		{header:'${text("旧数据字段名称")}', name:'oldName', index:'a.old_name', width:150, align:"left"},
 		{header:'${text("新数据字段名称")}', name:'newName', index:'a.new_name', width:150, align:"left"},
-		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
+		{header:'${text("系统流向名称")}', name:'systemId.name', index:'a.system_id.id', width:150, align:"left"},
+		/*{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
-		}},
+		}},*/
 		{header:'${text("更新时间")}', name:'updateTime', index:'a.update_time', width:150, align:"center"},
 		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){

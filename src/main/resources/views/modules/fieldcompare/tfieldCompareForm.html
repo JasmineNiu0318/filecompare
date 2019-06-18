@@ -39,7 +39,10 @@
 							<label class="control-label col-sm-4" title="">
 								<span class="required ">*</span> ${text('系统流向名称')}：<i class="fa icon-question hide"></i></label>
 							<div class="col-sm-8">
-								<#form:select path="systemId" dictType="sys_field_compare" blankOption="true" class="form-control" />
+								<#form:treeselect id="systemId" title="系统流向名称"
+								path="systemId.id" labelPath="systemId.name"
+								url="${ctx}/systemcompare/tsystemCompare/treeData"
+								class="" allowClear="true"/>
 							</div>
 						</div>
 					</div>

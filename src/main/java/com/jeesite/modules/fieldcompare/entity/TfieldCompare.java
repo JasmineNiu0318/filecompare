@@ -3,7 +3,6 @@
  */
 package com.jeesite.modules.fieldcompare.entity;
 
-import com.jeesite.modules.sys.entity.User;
 import com.jeesite.modules.systemcompare.entity.TsystemCompare;
 import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
@@ -28,16 +27,12 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="system_id", attrName="systemId.id", label="系统流向ID"),
 		@Column(name="old_name", attrName="oldName", label="旧数据字段名称", queryType=QueryType.LIKE),
 		@Column(name="new_name", attrName="newName", label="新数据字段名称", queryType=QueryType.LIKE),
-		@Column(name="status", attrName="status", label="状态", comment="状态（0正常 1删除 2停用）", isUpdate=false),
-		@Column(name="create_by", attrName="createBy", label="创建者", isUpdate=false, isQuery=false),
-		@Column(name="create_date", attrName="createDate", label="创建时间", isUpdate=false, isQuery=false),
-		@Column(name="update_by", attrName="updateBy", label="更新者", isQuery=false),
-		@Column(name="update_time", attrName="updateTime", label="更新时间"),
-		@Column(name="remarks", attrName="remarks", label="备注信息", queryType=QueryType.LIKE),
+		@Column(includeEntity=DataEntity.class),
 	},joinTable = {
 		@JoinTable(type=Type.LEFT_JOIN, entity= TsystemCompare.class, attrName="systemId", alias="u10",
 				on="u10.id = a.system_id", columns={
 				@Column(name="name", label="系统流向名称"),
+				@Column(name="id", label="系统流向ID",isPK = true),
 		}),
 }, orderBy="a.id DESC"
 )
@@ -51,8 +46,7 @@ public class TfieldCompare extends DataEntity<TfieldCompare> {
 	private String systemName;    //系统流向名称
 	private String oldName;		// 旧数据字段名称
 	private String newName;		// 新数据字段名称
-	private Date updateTime;		// 更新时间
-	
+
 	public TfieldCompare() {
 		this(null);
 	}
@@ -61,7 +55,7 @@ public class TfieldCompare extends DataEntity<TfieldCompare> {
 		super(id);
 	}
 	
-	@Length(min=0, max=64, message="系统流向ID长度不能超过 64 个字符")
+	/*@Length(min=0, max=64, message="系统流向ID长度不能超过 64 个字符")*/
 	public TsystemCompare getSystemId() {
 		return systemId;
 	}
@@ -98,15 +92,5 @@ public class TfieldCompare extends DataEntity<TfieldCompare> {
 	public void setNewName(String newName) {
 		this.newName = newName;
 	}
-	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	@NotNull(message="更新时间不能为空")
-	public Date getUpdateTime() {
-		return updateTime;
-	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
-	
 }
