@@ -10,6 +10,7 @@
 				<% if(hasPermi('fieldcompare:tfieldCompare:edit')){ %>
 					<a href="${ctx}/fieldcompare/tfieldCompare/form" class="btn btn-default btnTool" title="${text('新增t_field_compare')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
 				<% } %>
+				<a href="javascript:" class="btn btn-default" id="btnImport"><i class="fa fa-cloud-download"></i> ${text('导入')}</a>
 			</div>
 		</div>
 		<div class="box-body">
@@ -54,7 +55,7 @@
 </div>
 <% } %>
 <script>
-// 初始化DataGrid对象
+// 初始化DataGrid对象k
 $('#dataGrid').dataGrid({
 	searchForm: $("#searchForm"),
 	columnModel: [
@@ -64,7 +65,7 @@ $('#dataGrid').dataGrid({
 		/*{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
 		}},*/
-		{header:'${text("更新时间")}', name:'updateTime', index:'a.update_time', width:150, align:"center"},
+		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
 		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){
 			var actions = [];
@@ -80,4 +81,66 @@ $('#dataGrid').dataGrid({
 		
 	}
 });
+$('#btnImport').click(function(){
+	js.layer.open({
+		type: 1,
+		area: ['400px'],
+		title: '导入字段对应数据',
+		resize: false,
+		scrollbar: true,
+		content: js.template('importTpl'),
+		success: function(layero, index){
+			layero.find('input[type="checkbox"]').iCheck();
+			layero.find('input[type="treeselect"]').iCheck();
+		},
+		btn: ['<i class="fa fa-check"></i> 导入',
+			'<i class="fa fa-remove"></i> 取消'],
+		btn1: function(index, layero){
+			var form = {
+				inputForm: layero.find('#inputForm'),
+				file: layero.find('#file').val()
+			};
+			if (form.file == '' || (!js.endWith(form.file, '.xls') && !js.endWith(form.file, '.xlsx'))){
+				js.showMessage("${text('文件不正确，请选择后缀为 “xls”或“xlsx”的文件。')}", null, 'warning');
+				return false;
+			}
+			js.ajaxSubmitForm(form.inputForm, function(data){
+				js.showMessage(data.message);
+				if(data.result == Global.TRUE){
+					js.layer.closeAll();
+				}
+				page();
+			}, "json");
+			return true;
+		}
+	});
+});
+</script>
+<script id="importTpl" type="text/template">
+	<form id="inputForm" action="${ctx}/fieldcompare/tfieldCompare/importData" method="post" enctype="multipart/form-data"
+		  class="form-horizontal mt20 mb10" style="overflow:auto;max-height:200px;">
+		<div class="row">
+			<div class="col-xs-12 col-xs-offset-1">
+				<input type="file" id="file" name="file" class="form-file"/>
+				<div class="mt10 pt4">
+					<label class="control-label">${text('系统流向名称')}：</label>
+					<div class="control-inline">
+						<!--<#form:treeselect id="systemId" title="系统流向名称"
+						path="systemId.id" labelPath="systemId.name"
+						url="${ctx}/systemcompare/tsystemCompare/treeData"
+						class="" allowClear="true"/>-->
+						<#form:select path="systemId" items="${systemCompareList}" itemLabel="name" itemValue="id" blankOption="true" blankOptionLabel="请选择" class="form-control required" />
+					</div>
+				</div>
+				<div class="mt10 pt5">
+					<#form:checkbox name="updateSupport" label="${text('是否更新已经存在的数据')}" class="form-control"
+					title="${text('如果旧数据字段名称重复，更新这条数据。')}"/> &nbsp;
+					<a href="${ctx}/fieldcompare/tfieldCompare/importTemplate" class="btn btn-default btn-xs"><i class="fa fa-file-excel-o"></i> ${text('下载模板')}</a>
+				</div>
+				<font color="red" class="pull-left mt10">
+					${text('提示：仅允许导入“xls”或“xlsx”格式文件！')}
+				</font>
+			</div>
+		</div>
+	</form>
 </script>

@@ -3,14 +3,15 @@
  */
 package com.jeesite.modules.fieldcompare.entity;
 
+import com.jeesite.common.utils.excel.annotation.ExcelField;
+import com.jeesite.common.utils.excel.annotation.ExcelFields;
 import com.jeesite.modules.systemcompare.entity.TsystemCompare;
 import org.hibernate.validator.constraints.Length;
+
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 import com.jeesite.common.mybatis.annotation.JoinTable;
 import com.jeesite.common.mybatis.annotation.JoinTable.Type;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import javax.validation.constraints.NotNull;
 
 import com.jeesite.common.entity.DataEntity;
 import com.jeesite.common.mybatis.annotation.Column;
@@ -29,14 +30,42 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@Column(name="new_name", attrName="newName", label="新数据字段名称", queryType=QueryType.LIKE),
 		@Column(includeEntity=DataEntity.class),
 	},joinTable = {
-		@JoinTable(type=Type.LEFT_JOIN, entity= TsystemCompare.class, attrName="systemId", alias="u10",
-				on="u10.id = a.system_id", columns={
+		@JoinTable(type=Type.LEFT_JOIN, entity= TsystemCompare.class, attrName="systemId", alias="tsystemCompare",
+				on="tsystemCompare.id = a.system_id", columns={
 				@Column(name="name", label="系统流向名称"),
 				@Column(name="id", label="系统流向ID",isPK = true),
 		}),
 }, orderBy="a.id DESC"
 )
 public class TfieldCompare extends DataEntity<TfieldCompare> {
+
+	private Object refObj;
+
+	public Object getRefObj() {
+		return this.refObj;
+	}
+
+	public void setRefObj(Object refObj) {
+		this.refObj = refObj;
+	}
+
+	@Valid
+	@ExcelFields({@ExcelField(
+			title = "旧数据字段名称",
+			attrName = "oldName",
+			align = ExcelField.Align.CENTER,
+			sort = 10
+	), @ExcelField(
+			title = "新数据字段名称",
+			attrName = "newName",
+			align = ExcelField.Align.CENTER,
+			sort = 20
+	), @ExcelField(
+			title = "描述",
+			attrName = "remarks",
+			align = ExcelField.Align.CENTER,
+			sort = 40
+	)})
 	
 	private static final long serialVersionUID = 1L;
 	private TsystemCompare systemId;		// 系统流向ID
@@ -53,6 +82,20 @@ public class TfieldCompare extends DataEntity<TfieldCompare> {
 
 	public TfieldCompare(String id){
 		super(id);
+	}
+
+	public TsystemCompare getTsystemCompare() {
+		TsystemCompare tsystemCompare = (TsystemCompare)this.getRefObj();
+		if (tsystemCompare == null) {
+			tsystemCompare = new TsystemCompare();
+			this.setRefObj(tsystemCompare);
+		}
+
+		return tsystemCompare;
+	}
+
+	public void setEmployee(TsystemCompare tsystemCompare) {
+		this.setRefObj(tsystemCompare);
 	}
 	
 	/*@Length(min=0, max=64, message="系统流向ID长度不能超过 64 个字符")*/
@@ -92,5 +135,8 @@ public class TfieldCompare extends DataEntity<TfieldCompare> {
 	public void setNewName(String newName) {
 		this.newName = newName;
 	}
+
+
+
 
 }

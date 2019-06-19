@@ -3,7 +3,11 @@
  */
 package com.jeesite.modules.systemcompare.entity;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import com.jeesite.common.utils.excel.annotation.ExcelField;
+import com.jeesite.common.utils.excel.annotation.ExcelFields;
 import org.hibernate.validator.constraints.Length;
 
 import com.jeesite.common.entity.DataEntity;
@@ -23,8 +27,9 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 	}, orderBy="a.update_date DESC"
 )
 public class TsystemCompare extends DataEntity<TsystemCompare> {
-	
+
 	private static final long serialVersionUID = 1L;
+
 	private String name;		// 系统流向名称
 	
 	public TsystemCompare() {
@@ -37,6 +42,7 @@ public class TsystemCompare extends DataEntity<TsystemCompare> {
 	
 	@NotBlank(message="系统流向名称不能为空")
 	@Length(min=0, max=64, message="系统流向名称长度不能超过 64 个字符")
+	@ExcelField(title = "系统流向名称", attrName = "name", align = ExcelField.Align.CENTER, sort = 10)
 	public String getName() {
 		return name;
 	}

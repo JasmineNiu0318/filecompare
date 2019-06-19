@@ -11,8 +11,39 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
-	<select id="findPage" parameterType="com.jeesite.modules.fieldcompare.entity.TfieldCompare" resultType="com.jeesite.modules.fieldcompare.entity.TfieldCompare">
-		select
+	<select id="findByOldName" parameterType="java.lang.String" resultType="com.jeesite.modules.fieldcompare.entity.TfieldCompare">
+		select *
+		from t_field_compare
+		where status = 0
+		and old_name = #{oldName,jdbcType=VARCHAR}
 	</select>
+
+    <update id="updateByOldName" parameterType="com.jeesite.modules.fieldcompare.entity.TfieldCompare">
+        update t_field_compare
+        <set>
+            <if test="systemId != null">
+                system_id = #{systemId}
+            </if>
+            <if test="newName != null and newName != ''">
+                new_name = #{newName,jdbcType=VARCHAR}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy,jdbcType=VARCHAR}
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR}
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                remarks = #{remarks,jdbcType=VARCHAR}
+            </if>
+        </set>
+        where old_name = #{oldName,jdbcType=VARCHAR}
+    </update>
 	
 </mapper>

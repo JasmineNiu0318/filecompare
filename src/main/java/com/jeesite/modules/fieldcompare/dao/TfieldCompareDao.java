@@ -22,4 +22,17 @@ public interface TfieldCompareDao extends CrudDao<TfieldCompare> {
      * @return
      */
     Page<TfieldCompare> findPage(TfieldCompare tfieldCompare);
+
+    /**
+     * 通过就字段名称查找
+     * @param oldName
+     * @return
+     */
+    TfieldCompare findByOldName(String oldName);
+
+    /**
+     * 通过旧字段名称更新数据
+     * @param tfieldCompare
+     */
+    void updateByOldName(TfieldCompare tfieldCompare);
 }

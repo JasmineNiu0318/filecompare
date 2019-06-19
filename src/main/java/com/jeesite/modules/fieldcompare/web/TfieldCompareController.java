@@ -9,8 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 import com.jeesite.common.collect.ListUtils;
 import com.jeesite.common.collect.MapUtils;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.common.utils.excel.ExcelExport;
+import com.jeesite.common.utils.excel.annotation.ExcelField;
+import com.jeesite.modules.sys.entity.EmpUser;
 import com.jeesite.modules.sys.entity.Office;
+import com.jeesite.modules.sys.entity.User;
+import com.jeesite.modules.sys.utils.UserUtils;
+import com.jeesite.modules.systemcompare.entity.TsystemCompare;
+import com.jeesite.modules.systemcompare.service.TsystemCompareService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +33,9 @@ import com.jeesite.common.entity.Page;
 import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.fieldcompare.entity.TfieldCompare;
 import com.jeesite.modules.fieldcompare.service.TfieldCompareService;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +50,9 @@ public class TfieldCompareController extends BaseController {
 
 	@Autowired
 	private TfieldCompareService tfieldCompareService;
-	
+	@Autowired
+	private TsystemCompareService tsystemCompareService;
+
 	/**
 	 * 获取数据
 	 */
@@ -55,7 +67,9 @@ public class TfieldCompareController extends BaseController {
 	@RequiresPermissions("fieldcompare:tfieldCompare:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(TfieldCompare tfieldCompare, Model model) {
+		List<TsystemCompare> systemCompareList = tsystemCompareService.findList(new TsystemCompare());
 		model.addAttribute("tfieldCompare", tfieldCompare);
+		model.addAttribute("systemCompareList", systemCompareList);
 		return "modules/fieldcompare/tfieldCompareList";
 	}
 	
@@ -117,6 +131,48 @@ public class TfieldCompareController extends BaseController {
 			mapList.add(map);
 		}
 		return mapList;
+	}
+
+	@RequestMapping({"importTemplate"})
+	public void importTemplate(HttpServletResponse response) {
+		//TfieldCompare tfieldCompare = this.tfieldCompareService.get("0");
+
+		//List<TfieldCompare> list = ListUtils.newArrayList(new TfieldCompare[]{tfieldCompare});
+		List<TfieldCompare> list = new ArrayList<>();
+		String fileName = "字段对应模板.xlsx";
+		ExcelExport ee = new ExcelExport("字段对应数据", TfieldCompare.class, ExcelField.Type.IMPORT, new String[0]);
+		Throwable var7 = null;
+
+		try {
+			ee.setDataList(list).write(response, fileName);
+		} catch (Throwable var16) {
+			var7 = var16;
+			throw var16;
+		} finally {
+			if (ee != null) {
+				if (var7 != null) {
+					try {
+						ee.close();
+					} catch (Throwable var15) {
+						var7.addSuppressed(var15);
+					}
+				} else {
+					ee.close();
+				}
+			}
+		}
+	}
+
+	@PostMapping({"importData"})
+	public String importData(MultipartFile file, String updateSupport, String systemId) {
+		try {
+			boolean isUpdateSupport = "1".equals(updateSupport);
+			String message = this.tfieldCompareService.importData(file, isUpdateSupport, systemId);
+			//String message = this.empUserService.importData(file, isUpdateSupport);
+			return this.renderResult(Global.TRUE, text("posfull:" + message));
+		} catch (Exception var5) {
+			return this.renderResult("false", "posfull:" + var5.getMessage());
+		}
 	}
 
 	
