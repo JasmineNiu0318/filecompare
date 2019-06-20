@@ -8,10 +8,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.collect.ListUtils;
+import com.jeesite.common.collect.MapUtils;
 import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.fieldcompare.entity.TfieldCompare;
 import com.jeesite.modules.texcel.entity.Header;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +33,7 @@ import com.jeesite.modules.texcel.service.TexcelService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * t_excelController
@@ -69,17 +74,32 @@ public class TexcelController extends BaseController {
 	public Page<Texcel> listData(Texcel texcel, HttpServletRequest request, HttpServletResponse response) {
 		texcel.setPage(new Page<>(request, response));
 		Page<Texcel> page = texcelService.findPage(texcel);
-		List<Texcel> list = page.getList();
-		List<Texcel> texcelList = new ArrayList<>();
-		if(!list.isEmpty()){
-			for(Texcel texcel1 : list){
-				String header = texcel1.getHeader();
-				List<Header> headers = JSONObject.parseArray(header, Header.class);
-				texcel1.setHeaderList(headers);
-				texcelList.add(texcel1);
+		return page;
+	}
+
+	/**
+	 * 查询列表数据
+	 */
+	@RequiresPermissions("texcel:texcel:view")
+	@RequestMapping(value = "listExData")
+	@ResponseBody
+	public Page<Texcel> listExData(Texcel texcel, HttpServletRequest request, HttpServletResponse response) {
+		Texcel texce = new Texcel();
+		texce.setPage(new Page<>(request, response));
+		Page<Texcel> page = texcelService.findPage(texce);
+
+		//将当前的数据移除list
+		if(CollectionUtils.isNotEmpty(page.getList())){
+			List<Texcel> texcelList = page.getList();
+			Texcel texcel1 = new Texcel();
+			for(Texcel excel : texcelList){
+				if(excel.getId().equals(texcel.getId())){
+					BeanUtils.copyProperties(excel, texcel1);
+				}
 			}
+			texcelList.remove(texcel1);
+			page.setList(texcelList);
 		}
-		page.setList(texcelList);
 		return page;
 	}
 
@@ -132,7 +152,7 @@ public class TexcelController extends BaseController {
     }
 
     /**
-     * 查看原始数据
+     * 查看原始数据页面
      */
     @RequiresPermissions("texcel:texcel:view")
     @RequestMapping(value = "allinfoform")
@@ -140,4 +160,44 @@ public class TexcelController extends BaseController {
         model.addAttribute("texcel", texcel);
         return "modules/texcel/texcelallinfoForm";
     }
+
+	/**
+	 * 进入数据对比页面
+	 */
+	@RequiresPermissions("texcel:texcel:edit")
+	@RequestMapping(value = "compareList")
+	public String compareList(Texcel texcel, Model model) {
+		model.addAttribute("texcel", texcel);
+		return "modules/texcel/texcelCompareList";
+	}
+
+	/**
+	 * 对比数据
+	 */
+	@RequiresPermissions("texcel:texcel:edit")
+	@RequestMapping(value = "exportData")
+	@ResponseBody
+	public String exportData(Texcel texcel) {
+		if(texcel != null){
+			String id = texcel.getId();
+		}
+		//texcelService.delete(texcel);
+		return renderResult(Global.TRUE, text("删除t_excel成功！"));
+	}
+
+	@RequestMapping({"treeData"})
+	@ResponseBody
+	public List<Map<String, Object>> treeData() {
+		List<Map<String, Object>> mapList = ListUtils.newArrayList();
+		List<Texcel> list = this.texcelService.findList(new Texcel());
+		for(int i=0;i<list.size();i++) {
+			Texcel e=list.get(i);
+			Map<String, Object> map = MapUtils.newHashMap();
+			map.put("id", e.getId());
+			String name = e.getRelationId().getName();
+			map.put("name",name);
+			mapList.add(map);
+		}
+		return mapList;
+	}
 }

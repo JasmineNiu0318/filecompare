@@ -22,6 +22,15 @@
 						<#form:input path="name" maxlength="255" class="form-control width-120"/>
 					</div>
 				</div>
+				<div class="form-group">
+					<label class="control-label">${text('关联Excel名称')}：</label>
+					<div class="control-inline">
+						<#form:treeselect id="relationId" title="关联Excel名称"
+						path="relationId.id" labelPath="relationId.name"
+						url="${ctx}/texcel/texcel/treeData"
+						class="" allowClear="true"/>
+					</div>
+				</div>
 				<!--<div class="form-group">
 					<label class="control-label">${text('状态')}：</label>
 					<div class="control-inline width-120">
@@ -62,9 +71,7 @@ $('#dataGrid').dataGrid({
 		{header:'${text("Excel名称")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" data-title="${text("编辑t_excel")}">'+(val||row.id)+'</a>';
 		}},
-		/*{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
-			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
-		}},*/
+		{header:'${text("关联Excel名称")}', name:'relationId.name', index:'a.relation_id.id', width:150, align:"left"},
 		{header:'${text("系统流向名称")}', name:'systemId.name', index:'a.system_id.id', width:150, align:"left"},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
 		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
@@ -75,7 +82,7 @@ $('#dataGrid').dataGrid({
 				actions.push('<a href="${ctx}/texcel/texcel/delete?id='+row.id+'" class="btnList" title="${text("删除t_excel")}" data-confirm="${text("确认要删除该t_excel吗？")}"><i class="fa fa-trash-o"></i></a>&nbsp;');
 				actions.push('<a href="${ctx}/texcel/texcel/allinfoform?id='+row.id+'" class="btnList" title="${text("查看原始数据")}"><i class="fa fa-database"></i></a>&nbsp;');
 				actions.push('<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" title="${text("编辑数据")}"><i class="fa fa-edit (alias)"></i></a>&nbsp;');
-				actions.push('<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" title="${text("数据对比")}"><i class="fa fa-delicious"></i></a>&nbsp;');
+				actions.push('<a href="${ctx}/texcel/texcel/exportData?id='+row.id+'" class="btnList" title="${text("数据对比")}"><i class="fa fa-delicious"></i></a>&nbsp;');
 			<% } %>
 			return actions.join('');
 		}}

@@ -35,6 +35,18 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-xs-6">
+						<div class="form-group">
+							<label class="control-label col-sm-4" title="">
+								<span class="required hide">*</span> ${text('关联Excel名称')}：<i class="fa icon-question hide"></i></label>
+							<div class="col-sm-8">
+								<#form:treeselect id="relationId" title="关联Excel名称"
+								path="relationId.id" labelPath="relationId.name"
+								url="${ctx}/texcel/texcel/treeData"
+								class="" allowClear="true"/>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12">

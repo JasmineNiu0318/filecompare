@@ -22,7 +22,8 @@ import java.util.List;
  */
 @Table(name="t_excel", alias="a", columns={
 		@Column(name="id", attrName="id", label="主键", isPK=true),
-		@Column(name="system_id", attrName="systemId.id", label="系统流向ID", isInsert=true, isUpdate=true, isQuery=false),
+		@Column(name="system_id", attrName="systemId.id", label="系统流向ID", isInsert=true, isUpdate=true, isQuery=true),
+		@Column(name="relation_id", attrName="relationId.id", label="关联ExcelID", isInsert=true, isUpdate=true, isQuery=true),
 		@Column(name="name", attrName="name", label="Excel名称", queryType=QueryType.LIKE),
 		@Column(name="header", attrName="header", label="表头", isInsert=true, isUpdate=true, isQuery=false),
 		@Column(includeEntity=DataEntity.class),
@@ -30,9 +31,16 @@ import java.util.List;
 		@JoinTable(type= JoinTable.Type.LEFT_JOIN, entity= TsystemCompare.class, attrName="systemId", alias="tsystemCompare",
 				on="tsystemCompare.id = a.system_id",
 				columns={
-				@Column(name="name", label="系统流向名称"),
-				@Column(name="id", label="系统流向ID",isPK = true)
+					@Column(name="name", label="系统流向名称"),
+					@Column(name="id", label="系统流向ID",isPK = true)
 				}),
+		@JoinTable(type= JoinTable.Type.LEFT_JOIN, entity= Texcel.class, attrName="relationId", alias="b",
+				on="b.id = a.relation_id",
+				columns= {
+					@Column(name = "name", label = "关联Excel名称"),
+					@Column(name = "id", label = "关联ExcelID", isPK = true)
+				}
+		)
 }, orderBy="a.id DESC"
 )
 public class Texcel extends DataEntity<Texcel> {
@@ -49,6 +57,7 @@ public class Texcel extends DataEntity<Texcel> {
 	
 	private static final long serialVersionUID = 1L;
 	private TsystemCompare systemId;		// 系统流向ID
+	private Texcel relationId;		//关联ExcelID
 	private String name;		// Excel名称
 	private String header;		// 表头
 	private List<Header> headerList = ListUtils.newArrayList();
@@ -82,7 +91,15 @@ public class Texcel extends DataEntity<Texcel> {
 	public void setSystemId(TsystemCompare systemId) {
 		this.systemId = systemId;
 	}
-	
+
+	public Texcel getRelationId() {
+		return relationId;
+	}
+
+	public void setRelationId(Texcel relationId) {
+		this.relationId = relationId;
+	}
+
 	@Length(min=0, max=255, message="Excel名称长度不能超过 255 个字符")
 	public String getName() {
 		return name;
