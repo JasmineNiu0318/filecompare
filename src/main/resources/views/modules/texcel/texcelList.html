@@ -6,11 +6,11 @@
 				<i class="fa fa-list-alt"></i> ${text('t_excel管理')}
 			</div>
 			<div class="box-tools pull-right">
-				<a href="#" class="btn btn-default" id="btnUpload" title="${text('文件上传')}"><i class="fa fa-cloud-upload"></i> ${text('文件上传')}</a>
 				<a href="#" class="btn btn-default" id="btnSearch" title="${text('查询')}"><i class="fa fa-filter"></i> ${text('查询')}</a>
 				<% if(hasPermi('texcel:texcel:edit')){ %>
 					<a href="${ctx}/texcel/texcel/form" class="btn btn-default btnTool" title="${text('新增t_excel')}"><i class="fa fa-plus"></i> ${text('新增')}</a>
 				<% } %>
+				<a href="javascript:" class="btn btn-default" id="btnImport"><i class="fa fa-cloud-download"></i> ${text('导入')}</a>
 			</div>
 		</div>
 		<div class="box-body">
@@ -22,10 +22,19 @@
 						<#form:input path="name" maxlength="255" class="form-control width-120"/>
 					</div>
 				</div>
-				<div class="form-group">
+				<!--<div class="form-group">
 					<label class="control-label">${text('状态')}：</label>
 					<div class="control-inline width-120">
 						<#form:select path="status" dictType="sys_search_status" blankOption="true" class="form-control"/>
+					</div>
+				</div>-->
+				<div class="form-group">
+					<label class="control-label">${text('系统流向名称')}：</label>
+					<div class="control-inline">
+						<#form:treeselect id="systemId" title="系统流向名称"
+						path="systemId.id" labelPath="systemId.name"
+						url="${ctx}/systemcompare/tsystemCompare/treeData"
+						class="" allowClear="true"/>
 					</div>
 				</div>
 				<div class="form-group">
@@ -53,9 +62,10 @@ $('#dataGrid').dataGrid({
 		{header:'${text("Excel名称")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" data-title="${text("编辑t_excel")}">'+(val||row.id)+'</a>';
 		}},
-		{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
+		/*{header:'${text("状态")}', name:'status', index:'a.status', width:150, align:"center", formatter: function(val, obj, row, act){
 			return js.getDictLabel(${@DictUtils.getDictListJson('sys_search_status')}, val, '${text("未知")}', true);
-		}},
+		}},*/
+		{header:'${text("系统流向名称")}', name:'systemId.name', index:'a.system_id.id', width:150, align:"left"},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
 		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){

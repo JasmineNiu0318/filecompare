@@ -33,7 +33,7 @@ import com.jeesite.common.mybatis.mapper.query.QueryType;
 		@JoinTable(type=Type.LEFT_JOIN, entity= TsystemCompare.class, attrName="systemId", alias="tsystemCompare",
 				on="tsystemCompare.id = a.system_id", columns={
 				@Column(name="name", label="系统流向名称"),
-				@Column(name="id", label="系统流向ID",isPK = true),
+				@Column(name="id", label="系统流向ID",isPK = true)
 		}),
 }, orderBy="a.id DESC"
 )
@@ -94,7 +94,7 @@ public class TfieldCompare extends DataEntity<TfieldCompare> {
 		return tsystemCompare;
 	}
 
-	public void setEmployee(TsystemCompare tsystemCompare) {
+	public void setTsystemCompare(TsystemCompare tsystemCompare) {
 		this.setRefObj(tsystemCompare);
 	}
 	

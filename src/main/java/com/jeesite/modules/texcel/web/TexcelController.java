@@ -6,6 +6,11 @@ package com.jeesite.modules.texcel.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.jeesite.common.lang.StringUtils;
+import com.jeesite.modules.texcel.entity.Header;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,6 +69,17 @@ public class TexcelController extends BaseController {
 	public Page<Texcel> listData(Texcel texcel, HttpServletRequest request, HttpServletResponse response) {
 		texcel.setPage(new Page<>(request, response));
 		Page<Texcel> page = texcelService.findPage(texcel);
+		List<Texcel> list = page.getList();
+		List<Texcel> texcelList = new ArrayList<>();
+		if(!list.isEmpty()){
+			for(Texcel texcel1 : list){
+				String header = texcel1.getHeader();
+				List<Header> headers = JSONObject.parseArray(header, Header.class);
+				texcel1.setHeaderList(headers);
+				texcelList.add(texcel1);
+			}
+		}
+		page.setList(texcelList);
 		return page;
 	}
 
@@ -73,6 +89,10 @@ public class TexcelController extends BaseController {
 	@RequiresPermissions("texcel:texcel:view")
 	@RequestMapping(value = "form")
 	public String form(Texcel texcel, Model model) {
+		if(StringUtils.isNotEmpty(texcel.getHeader())){
+			List<Header> headers = JSONObject.parseArray(texcel.getHeader(), Header.class);
+			texcel.setHeaderList(headers);
+		}
 		model.addAttribute("texcel", texcel);
 		return "modules/texcel/texcelForm";
 	}
@@ -84,6 +104,9 @@ public class TexcelController extends BaseController {
 	@PostMapping(value = "save")
 	@ResponseBody
 	public String save(@Validated Texcel texcel) {
+		if(CollectionUtils.isNotEmpty(texcel.getHeaderList())){
+			texcel.setHeader(JSONArray.toJSONString(texcel.getHeaderList()));
+		}
 		texcelService.save(texcel);
 		return renderResult(Global.TRUE, text("保存t_excel成功！"));
 	}

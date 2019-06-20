@@ -19,7 +19,6 @@ import com.jeesite.modules.texcel.dao.TexcelDao;
  * @version 2019-06-13
  */
 @Service
-@Transactional(readOnly=true)
 public class TexcelService extends CrudService<TexcelDao, Texcel> {
 	
 	/**
