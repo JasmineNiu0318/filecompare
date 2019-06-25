@@ -71,8 +71,8 @@ $('#dataGrid').dataGrid({
 		{header:'${text("Excel名称")}', name:'name', index:'a.name', width:150, align:"left", frozen:true, formatter: function(val, obj, row, act){
 			return '<a href="${ctx}/texcel/texcel/form?id='+row.id+'" class="btnList" data-title="${text("编辑t_excel")}">'+(val||row.id)+'</a>';
 		}},
-		{header:'${text("关联Excel名称")}', name:'relationId.name', index:'a.relation_id.id', width:150, align:"left"},
-		{header:'${text("系统流向名称")}', name:'systemId.name', index:'a.system_id.id', width:150, align:"left"},
+		{header:'${text("关联Excel名称")}', name:'relationId.name',index:'a.relationId.id', sortable:false, width:150, align:"left"},
+		{header:'${text("系统流向名称")}', name:'systemId.name', index:'a.systemId.id', sortable:false, width:150, align:"left"},
 		{header:'${text("更新时间")}', name:'updateDate', index:'a.update_date', width:150, align:"center"},
 		{header:'${text("备注信息")}', name:'remarks', index:'a.remarks', width:150, align:"left"},
 		{header:'${text("操作")}', name:'actions', width:120, sortable:false, title:false, formatter: function(val, obj, row, act){

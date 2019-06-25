@@ -5,6 +5,7 @@ package com.jeesite.modules.texcel.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,10 @@ import com.jeesite.modules.texcel.dao.TexcelDao;
  */
 @Service
 public class TexcelService extends CrudService<TexcelDao, Texcel> {
-	
+
+	@Autowired
+	private TexcelDao texcelDao;
+
 	/**
 	 * 获取单条数据
 	 * @param texcel
@@ -34,7 +38,6 @@ public class TexcelService extends CrudService<TexcelDao, Texcel> {
 	/**
 	 * 查询分页数据
 	 * @param texcel 查询条件
-	 * @param texcel.page 分页对象
 	 * @return
 	 */
 	@Override
@@ -71,5 +74,13 @@ public class TexcelService extends CrudService<TexcelDao, Texcel> {
 	public void delete(Texcel texcel) {
 		super.delete(texcel);
 	}
-	
+
+	/**
+	 * 通过ExcelId查询Excel数据
+	 * @param id
+	 * @return
+	 */
+    public List<String> findTexcelInfoByExcelId(String id) {
+		return texcelDao.findTexcelInfoByExcelId(id);
+    }
 }

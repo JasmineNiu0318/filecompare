@@ -11,5 +11,11 @@
 		</where>
 		ORDER BY ${sqlMap.order.toSql()}
 	</select> -->
+
+	<select id="findTexcelInfoByExcelId" parameterType="java.lang.String" resultType="java.lang.String">
+		select row_info
+		from t_excel_info_old
+		where excel_id = #{id,jdbcType=VARCHAR}
+	</select>
 	
 </mapper>

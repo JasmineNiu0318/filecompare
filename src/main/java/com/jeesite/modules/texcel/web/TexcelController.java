@@ -6,6 +6,7 @@ package com.jeesite.modules.texcel.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jeesite.common.collect.ListUtils;
@@ -31,6 +32,7 @@ import com.jeesite.common.web.BaseController;
 import com.jeesite.modules.texcel.entity.Texcel;
 import com.jeesite.modules.texcel.service.TexcelService;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -156,8 +158,18 @@ public class TexcelController extends BaseController {
      */
     @RequiresPermissions("texcel:texcel:view")
     @RequestMapping(value = "allinfoform")
-    public String updateInfoForm(Texcel texcel, Model model) {
+    public String allinfoform(Texcel texcel, Model model) {
+		//查询该Excel所有列
+		Texcel t = this.texcelService.get(texcel.getId());
+		List<Header> list = JSONArray.parseArray(t.getHeader(), Header.class);
+		List<String> nameList = new ArrayList<>();
+		for(Header header : list){
+			nameList.add(JSON.toJSONString(header));
+		}
+		List<String> dataList = this.texcelService.findTexcelInfoByExcelId(t.getId());
         model.addAttribute("texcel", texcel);
+		model.addAttribute("nameList", t.getHeader());
+		model.addAttribute("dataList", dataList);
         return "modules/texcel/texcelallinfoForm";
     }
 
@@ -176,13 +188,12 @@ public class TexcelController extends BaseController {
 	 */
 	@RequiresPermissions("texcel:texcel:edit")
 	@RequestMapping(value = "exportData")
-	@ResponseBody
-	public String exportData(Texcel texcel) {
+	public String exportData(Texcel texcel, Model model) {
 		if(texcel != null){
 			String id = texcel.getId();
 		}
 		//texcelService.delete(texcel);
-		return renderResult(Global.TRUE, text("删除t_excel成功！"));
+		return "modules/texcel/roleList";
 	}
 
 	@RequestMapping({"treeData"})
